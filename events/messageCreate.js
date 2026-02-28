@@ -1,3 +1,5 @@
+const logger = require("../utils/logger");
+
 module.exports = {
     name: "messageCreate",
     async execute(client, message) {
@@ -26,7 +28,11 @@ module.exports = {
             if (!authorPerms.has(command.permissions) && !client.config.owners.includes(message.author.id)) return message.reply("Vous n'avez pas les permissions nécessaires pour exécuter cette commande.").catch(() => {});
         };
 
-        command.execute(client, message, args);
-        console.log("[CMD]".blue, `${message.guild.name} | ${message.channel.name} | ${message.author.tag} | ${command.name}`);
+        try {
+            await command.execute(client, message, args);
+            logger.info(`[CMD] ${message.guild.name} | ${message.channel.name} | ${message.author.tag} | ${command.name}`);
+        } catch (error) {
+            logger.error(`Erreur lors de l'exécution de la commande "${command.name}"`, error);
+        };
     }
 }
