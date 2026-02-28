@@ -1,8 +1,12 @@
+const logger = require("../utils/logger");
+
 module.exports = {
     name: "clientReady",
     once: true,
     async execute(client) {
-        console.log(`[READY] ${client.user.tag} (${client.user.id}) est prêt | ${client.guilds.cache.size.toLocaleString('fr-FR')} serveurs | ${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0).toLocaleString('fr-FR')} utilisateurs`.green);
+        logger.info(`Bot connecté en tant que ${client.user.tag} (${client.user.id})`);
+        logger.info(`Serveurs : ${client.guilds.cache.size.toLocaleString("fr-FR")} | Utilisateurs : ${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0).toLocaleString("fr-FR")}`);
+        logger.info(`Commandes chargées : ${client.commands.size} | Node.js ${process.version}`);
 
         // mise à jour des commandes Slash
         await client.application.commands.fetch();

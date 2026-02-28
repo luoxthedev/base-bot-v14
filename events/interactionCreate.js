@@ -1,3 +1,5 @@
+const logger = require("../utils/logger");
+
 module.exports = {
     name: "interactionCreate",
     async execute(client, interaction) {
@@ -28,8 +30,12 @@ module.exports = {
                 });
             };
 
-            command.executeSlash(client, interaction);
-            console.log("[CMD-S]".blue, interaction.guild ? `${interaction.guild.name} | ${interaction.channel.name}` : `DM`, `| ${interaction.user.tag} | ${command.name}`);
+            try {
+                await command.executeSlash(client, interaction);
+                logger.info(`[CMD-S] ${interaction.guild ? `${interaction.guild.name} | ${interaction.channel.name}` : "DM"} | ${interaction.user.tag} | ${command.name}`);
+            } catch (error) {
+                logger.error(`Erreur lors de l'exécution de la commande slash "${command.name}"`, error);
+            };
         };
     }
 }

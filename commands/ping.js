@@ -11,7 +11,9 @@ module.exports = {
         message.reply(`🏓 **Mon ping est de :** ${client.ws.ping} ms.`).catch(() => {});
     },
     async executeSlash(client, interaction) {
-        interaction.reply(`🏓 **Mon ping est de :** ${client.ws.ping} ms.`).catch(() => {});
+        const sent = await interaction.reply({ content: "🏓 Pong...", fetchReply: true });
+        const latency = sent.createdTimestamp - interaction.createdTimestamp;
+        interaction.editReply(`🏓 **Pong !**\n> 📡 Latence WebSocket : **${client.ws.ping} ms**\n> ⏱ Temps de réponse : **${latency} ms**`).catch(() => {});
     },
     get data() {
         return new SlashCommandBuilder()

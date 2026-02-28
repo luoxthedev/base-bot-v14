@@ -1,6 +1,7 @@
 const { ActivityType, Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
 const colors = require("colors");
 const fs = require("fs");
+const logger = require("./utils/logger");
 
 const client = new Client({
     intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildModeration, GatewayIntentBits.GuildExpressions, GatewayIntentBits.GuildIntegrations, GatewayIntentBits.GuildWebhooks, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.DirectMessages, GatewayIntentBits.DirectMessageReactions, GatewayIntentBits.DirectMessageTyping, GatewayIntentBits.GuildScheduledEvents, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ],
@@ -38,6 +39,7 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(client, ...args));
     };
 };
+logger.info(`${eventFiles.length} event(s) chargé(s)`);
 
 // chargement des commandes
 client.commands = new Collection();
@@ -46,14 +48,15 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 };
+logger.info(`${commandFiles.length} commande(s) chargée(s)`);
 
 // gestion des erreurs
-async function errorHandler(error) {
+function errorHandler(error) {
     // erreurs ignorées
     if (error.code == 10062) return; // Unknown interaction
     if (error.code == 40060) return; // Interaction has already been acknowledged
 
-    console.log(`[ERROR] ${error}`.red);
+    logger.error("Erreur non gérée", error);
 };
 
 process.on("unhandledRejection", errorHandler);
